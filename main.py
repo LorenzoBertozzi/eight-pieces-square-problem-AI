@@ -7,7 +7,7 @@ class PuzzleNode:
         self.parent = parent
         self.action = action
         self.cost = 0 if parent is None else parent.cost + 1
-    
+
     def __lt__(self, other):
         return (self.cost + self.heuristic()) < (other.cost + other.heuristic())
 
@@ -60,35 +60,62 @@ class PuzzleNode:
                   total_distance += abs(i - goal_i) + abs(j - goal_j)
       return total_distance
 
+def is_possible(initial_state):
+  contador= 0 
+  i= 0
+  size = len(initial_state)
+
+  while i < size :
+    j = i
+    while j < size:
+      if initial_state[i] < initial_state[j]:
+        contador = contador + 1;
+      j = j + 1;
+    i = i + 1;
+
+  if (contador+3)%2 == 1 :
+    return 0
+
+  return 1
+
 def solve_puzzle(initial_state, goal_state):
-    open_set = [PuzzleNode(initial_state)]
-    closed_set = set()
-    
-    while open_set:
-        current_node = heapq.heappop(open_set)
-        
-        if current_node.is_goal(goal_state):
-            solution = []
-            while current_node.parent:
-                solution.append(current_node.action)
-                current_node = current_node.parent
-            solution.reverse()
-            return solution
-        
-        closed_set.add(current_node)
-        
-        for action in current_node.find_legal_actions():
-            child_node = current_node.move(action)
-            if child_node in closed_set:
-                continue
-            if child_node not in open_set:
-                heapq.heappush(open_set, child_node)
-    
+   #indentificar se initial_state is_possivel
+    if is_possible(initial_state) :
+      open_set = [PuzzleNode(initial_state)]
+      closed_set = set()
+      while open_set:
+          current_node = heapq.heappop(open_set)
+
+          if current_node.is_goal(goal_state):
+              solution = []
+              while current_node.parent:
+                  solution.append(current_node.action)
+                  current_node = current_node.parent
+              solution.reverse()
+              return solution
+
+          closed_set.add(current_node)
+
+          for action in current_node.find_legal_actions():
+              child_node = current_node.move(action)
+              if child_node in closed_set:
+                  continue
+              if child_node not in open_set:
+                  heapq.heappush(open_set, child_node)
+    else :
+      print("Impossivel")
+
     return None
 
 # Exemplo de uso:
-initial_state = (1, 2, 3, 0, 4, 6, 7, 5, 8)  # Estado inicial
-goal_state = (1, 2, 3, 4, 5, 6, 7, 8, 0)  # Estado objetivo
+#(1, 2, 3, 0, 4, 6, 7, 5, 8)
+#(7, 2, 4, 5, 0, 6, 8, 3, 1)
+#(8, 1, 2, 0, 4, 3, 7, 6, 5) -- impossivel
+
+initial_state = (8, 1, 2, 0, 4, 3, 7, 6, 5)  # Estado inicial
+goal_state = (0, 1, 2, 3, 4, 5, 6, 7, 8)  # Estado objetivo
+
+#(1, 2, 3, 4, 5, 6, 7, 8, 0)
 
 solution = solve_puzzle(initial_state, goal_state)
 if solution:
