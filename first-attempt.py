@@ -1,16 +1,6 @@
 import heapq
 
 class PuzzleNode:
-    def heuristic(self):
-      # Calcula a distância de Manhattan entre o estado atual e o estado objetivo
-      total_distance = 0;
-      for i in range(3):
-          for j in range(3):
-              if self.state[i * 3 + j] != 0:
-                  goal_position = goal_state.index(self.state[i * 3 + j])
-                  goal_i, goal_j = goal_position // 3, goal_position % 3
-                  total_distance += abs(i - goal_i) + abs(j - goal_j)
-      return total_distance
 
     def __init__(self, state, parent=None, action=None):
         self.state = state
@@ -61,9 +51,14 @@ class PuzzleNode:
         return PuzzleNode(tuple(new_state), self, action)
 
     def heuristic(self):
-        # Implement your heuristic function here (e.g., Manhattan distance)
-        # Example heuristic: return sum(abs(val // 3 - idx // 3) + abs(val % 3 - idx % 3) for idx, val in enumerate(self.state) if val != 0)
-        pass
+      total_distance = 0;
+      for i in range(3):
+          for j in range(3):
+              if self.state[i * 3 + j] != 0:
+                  goal_position = goal_state.index(self.state[i * 3 + j])
+                  goal_i, goal_j = goal_position // 3, goal_position % 3
+                  total_distance += abs(i - goal_i) + abs(j - goal_j)
+      return total_distance
 
 def solve_puzzle(initial_state, goal_state):
     open_set = [PuzzleNode(initial_state)]
