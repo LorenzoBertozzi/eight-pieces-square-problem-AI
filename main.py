@@ -61,26 +61,19 @@ class PuzzleNode:
       return total_distance
 
 def is_possible(initial_state):
-  contador= 0 
-  i= 0
-  size = len(initial_state)
+    inversion_count = 0
+    size = len(initial_state)
 
-  while i < size :
-    j = i
-    while j < size:
-      if initial_state[i] < initial_state[j]:
-        contador = contador + 1;
-      j = j + 1;
-    i = i + 1;
+    for i in range(size):
+        for j in range(i + 1, size):
+            if initial_state[i] > initial_state[j] and initial_state[i] != 0 and initial_state[j] != 0:
+                inversion_count += 1
 
-  if (contador+3)%2 == 1 :
-    return 0
-
-  return 1
+    return inversion_count % 2 == 0
 
 def solve_puzzle(initial_state, goal_state):
-   #indentificar se initial_state is_possivel
-    if is_possible(initial_state) :
+    #indentificar se initial_state is_possivel
+    if is_possible(initial_state):
       open_set = [PuzzleNode(initial_state)]
       closed_set = set()
       while open_set:
@@ -102,9 +95,7 @@ def solve_puzzle(initial_state, goal_state):
                   continue
               if child_node not in open_set:
                   heapq.heappush(open_set, child_node)
-    else :
-      print("Impossivel")
-
+    
     return None
 
 # Exemplo de uso:
